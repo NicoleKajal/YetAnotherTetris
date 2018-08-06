@@ -7,23 +7,25 @@ static const int GAME_PIECE_GRID_ENTRY_ROW = 0;
 static const int GAME_PIECE_GRID_ENTRY_COLUMN = (GameAttributes::GAME_GRID_COLUMN_COUNT - GAME_PIECE_MAX_WIDTH) / 2;
 static const int GAME_PIECE_GRID_ENTRY_ORIENTATION = 0;
 
-GamePiece::GamePiece(GameGrid &gameGrid, locationArrayPointer locations, sf::Color color)
+GamePiece::GamePiece(GameGrid &gameGrid, locationArrayPointer locations, GamePieceShape shape, sf::Color color)
 : m_mutex(),
+  m_shape(shape),
+  m_color(color),
   m_gameGrid(gameGrid),
   m_anchorRow(GAME_PIECE_GRID_ENTRY_ROW),
   m_anchorColumn(GAME_PIECE_GRID_ENTRY_COLUMN),
   m_orientation(GAME_PIECE_GRID_ENTRY_ORIENTATION),
-  m_color(color),
   m_locations(locations) {
 }
 
 GamePiece::GamePiece(const GamePiece &gamePiece)
 : m_mutex(),
+  m_shape(gamePiece.shape()),
+  m_color(gamePiece.color()),
   m_gameGrid(gamePiece.gameGrid()),
   m_anchorRow(gamePiece.anchorRow()),
   m_anchorColumn(gamePiece.anchorColumn()),
   m_orientation(gamePiece.orientation()),
-  m_color(gamePiece.color()),
   m_locations(gamePiece.locations()) {
 }
 
@@ -62,6 +64,11 @@ bool GamePiece::drop() {
 		;
 	}
 	return true;
+}
+
+bool GamePiece::canEnterGrid() {
+	std::lock_guard<std::mutex> scopedLock(m_mutex);
+	return m_gameGrid.locationsAvailable(getGridLocations());
 }
 
 void GamePiece::commitToGrid() {
@@ -117,6 +124,9 @@ int GamePiece::orientation() const {
 }
 sf::Color GamePiece::color() const {
 	return m_color;
+}
+GamePieceShape GamePiece::shape() const {
+	return m_shape;
 }
 locationArrayPointer GamePiece::locations() const {
 	return m_locations;

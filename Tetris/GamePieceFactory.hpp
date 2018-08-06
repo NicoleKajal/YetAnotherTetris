@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Color.hpp>
 #include "GamePieceShape.hpp"
 #include "GamePiece.hpp"
 #include "GameGrid.hpp"

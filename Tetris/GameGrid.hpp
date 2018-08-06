@@ -18,6 +18,7 @@ public:
 	void deleteRowsToBeDeleted();
 	void compactGrid();
 	bool hasRowsToBeDeleted();
+	void reset();
 private:
 	void deleteRow(int row);
 	void drawBox(int row, int column, sf::Color color);
@@ -25,7 +26,7 @@ private:
 	bool isRowFull(int row);
 	void setRowColor(int row, sf::Color color);
 	void drawGhostBox(int row, int column, sf::Color color);
-
+	void clearGrid();
 
 	mutable std::mutex						m_mutex;		// Used to make object thread-safe
 	sf::RenderWindow&						m_window;		// Window in which grid is to be drawn

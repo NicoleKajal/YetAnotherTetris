@@ -1,6 +1,7 @@
 #pragma once
 
 enum class EventType {
+	CREATE_NEW_GAME_PIECE,
 	MOVE_UP,
 	MOVE_DOWN,
 	MOVE_LEFT,

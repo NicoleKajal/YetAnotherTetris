@@ -3,6 +3,7 @@
 #include <list>
 #include <mutex>
 #include "Location.hpp"
+#include "GamePieceShape.hpp"
 
 class GameGrid;
 
@@ -18,8 +19,9 @@ typedef Location(*locationArrayPointer)[GAME_PIECE_LOCATION_COUNT];
 
 class GamePiece {
 public:
-	GamePiece(GameGrid& gameGrid, locationArrayPointer locations, sf::Color color);
+	GamePiece(GameGrid& gameGrid, locationArrayPointer locations, GamePieceShape shape, sf::Color color);
 	GamePiece(const GamePiece &gamePiece);
+	bool canEnterGrid();
 	bool rotateRight();
 	bool rotateLeft();
 	bool moveLeft();
@@ -34,6 +36,7 @@ public:
 	int anchorColumn() const;
 	int orientation() const;
 	sf::Color color() const;
+	GamePieceShape shape() const;
 	locationArrayPointer locations() const;
 	std::list<Location> getGridLocations();
 
@@ -41,10 +44,11 @@ private:
 	bool tryMove(int& parameter, int newValue);
 	
 	mutable std::mutex      m_mutex;
+	const GamePieceShape    m_shape;
+	const sf::Color			m_color;
 	int                     m_anchorRow;
 	int				        m_anchorColumn;
 	int				        m_orientation;
-	sf::Color			    m_color;
 	locationArrayPointer	m_locations;
 	GameGrid&               m_gameGrid;
 };

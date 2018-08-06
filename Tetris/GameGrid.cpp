@@ -16,12 +16,21 @@ GameGrid::GameGrid(sf::RenderWindow& window, float anchorX, float anchorY, int r
   m_grid() {
 
 	m_grid.resize(m_rowCount);
+	clearGrid();
+}
+
+void GameGrid::clearGrid() {
 	for (int row = 0; row < m_rowCount; row++) {
 		m_grid[row].resize(m_columnCount);
 		for (int column = 0; column < m_columnCount; column++) {
 			m_grid[row][column] = sf::Color::Black;
 		}
 	}
+}
+
+void GameGrid::reset() {
+	m_rowsToBeDeleted.clear();
+	clearGrid();
 }
 
 bool GameGrid::locationsAvailable(std::list<Location> locationsList) {

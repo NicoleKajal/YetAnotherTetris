@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Location.hpp"
 #include "GamePieceFactory.hpp"
-
+#include "GamePieceShape.hpp"
 
 const int GAME_PIECE_SHAPE_COUNT = 7;
 Location gamepieceLocations[GAME_PIECE_SHAPE_COUNT][GAME_PIECE_ORIENTATION_COUNT][GAME_PIECE_LOCATION_COUNT] =
@@ -69,7 +69,7 @@ sf::Color gamePieceColors[GAME_PIECE_COLOR_COUNT] = {
 };
 
 GamePiece* GamePieceFactory::makeGamePiece(GameGrid& gameGrid, GamePieceShape shape, sf::Color color) {
-	return new GamePiece(gameGrid, gamepieceLocations[static_cast<int>(shape)], color);
+	return new GamePiece(gameGrid, gamepieceLocations[static_cast<int>(shape)], shape, color);
 }
 sf::Color lastColor = sf::Color::White;
 
@@ -82,5 +82,6 @@ GamePiece* GamePieceFactory::makeRandomGamePiece(GameGrid& gameGrid) {
 			break;
 	}
 	lastColor = newColor;
-	return new GamePiece(gameGrid, gamepieceLocations[rand() % GAME_PIECE_SHAPE_COUNT], newColor);
+	GamePieceShape shape = static_cast<GamePieceShape>(rand() % GAME_PIECE_SHAPE_COUNT);
+	return new GamePiece(gameGrid, gamepieceLocations[static_cast<int>(shape)], shape, newColor);
 }
