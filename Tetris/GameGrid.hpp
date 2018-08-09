@@ -21,12 +21,13 @@ public:
 	void reset();
 private:
 	void deleteRow(int row);
-	void drawBox(int row, int column, sf::Color color);
+	void drawSquare(int row, int column, sf::Color color);
 	void drawGridLines();
 	bool isRowFull(int row);
 	void setRowColor(int row, sf::Color color);
-	void drawGhostBox(int row, int column, sf::Color color);
+	void drawGhostSquare(int row, int column, sf::Color color);
 	void clearGrid();
+	void drawLine(float x1, float y1, float x2, float y2);
 
 	mutable std::mutex						m_mutex;		// Used to make object thread-safe
 	sf::RenderWindow&						m_window;		// Window in which grid is to be drawn

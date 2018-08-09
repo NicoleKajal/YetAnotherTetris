@@ -26,7 +26,7 @@ private:
 	sf::RenderWindow&				m_window;
 	std::vector<EventDataPointer>	m_eventHistory;
 	GameGrid 						m_gameGrid;
-	std::shared_ptr<GamePiece>		m_gamePiece;
+	GamePiecePointer          		m_gamePiece;
 	MessageQueue<EventType>			m_messageQueue;
 	std::thread						m_thread;
 	std::thread						m_gravityThread;

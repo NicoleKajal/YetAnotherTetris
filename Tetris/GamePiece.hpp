@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <list>
 #include <mutex>
+#include <memory>
 #include "Location.hpp"
 #include "GamePieceShape.hpp"
 
@@ -39,6 +40,7 @@ public:
 	GamePieceShape shape() const;
 	locationArrayPointer locations() const;
 	std::list<Location> getGridLocations();
+	std::list<Location> getPreviewLocations();
 
 private:
 	bool tryMove(int& parameter, int newValue);
@@ -53,3 +55,5 @@ private:
 	GameGrid&               m_gameGrid;
 };
 
+typedef std::shared_ptr<GamePiece> GamePiecePointer;
+typedef std::list<GamePiecePointer> GamePieceList;

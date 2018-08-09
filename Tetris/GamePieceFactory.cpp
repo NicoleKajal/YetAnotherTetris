@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "Location.hpp"
-#include "GamePieceFactory.hpp"
+#include "GameAttributes.hpp"
 #include "GamePieceShape.hpp"
+#include "GamePieceFactory.hpp"
 
-const int GAME_PIECE_SHAPE_COUNT = 7;
-Location gamepieceLocations[GAME_PIECE_SHAPE_COUNT][GAME_PIECE_ORIENTATION_COUNT][GAME_PIECE_LOCATION_COUNT] =
+Location gamepieceLocations[GameAttributes::GAME_PIECE_SHAPE_COUNT][GAME_PIECE_ORIENTATION_COUNT][GAME_PIECE_LOCATION_COUNT] =
 {
 	{ // GAME_PIECE_SHAPE_LINE
 	{ { 1,0 },{ 1,1 },{ 1,2 },{ 1,3 } },
@@ -82,6 +82,6 @@ GamePiece* GamePieceFactory::makeRandomGamePiece(GameGrid& gameGrid) {
 			break;
 	}
 	lastColor = newColor;
-	GamePieceShape shape = static_cast<GamePieceShape>(rand() % GAME_PIECE_SHAPE_COUNT);
+	GamePieceShape shape = static_cast<GamePieceShape>(rand() % GameAttributes::GAME_PIECE_SHAPE_COUNT);
 	return new GamePiece(gameGrid, gamepieceLocations[static_cast<int>(shape)], shape, newColor);
 }

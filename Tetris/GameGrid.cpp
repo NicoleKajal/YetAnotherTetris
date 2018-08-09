@@ -102,8 +102,7 @@ void GameGrid::compactGrid() {
 	m_rowsToBeDeleted.clear();
 }
 
-
-void drawLine(sf::RenderWindow& window, float x1, float y1, float x2, float y2) {
+void GameGrid::drawLine(float x1, float y1, float x2, float y2) {
 	sf::Vertex points[] =
 	{
 		sf::Vertex(sf::Vector2f(x1, y1)),
@@ -112,46 +111,46 @@ void drawLine(sf::RenderWindow& window, float x1, float y1, float x2, float y2) 
 	static const sf::Color grey(50, 50, 50);
 	points[0].color = grey;
 	points[1].color = grey;
-	window.draw(points, 2, sf::Lines);
+	m_window.draw(points, 2, sf::Lines);
 }
 
 void GameGrid::drawGridLines() {
 	float startX = m_anchorX;
-	float endX = m_anchorX + GameAttributes::GAME_GRID_TOTAL_WIDTH;
+	float endX = m_anchorX + m_columnCount * (GameAttributes::SQUARE_WIDTH + GameAttributes::LINE_WIDTH);
 
 	// Draw lines for the rows
 	for (float row = 0; row <= m_rowCount; ++row) {
-		float y = m_anchorY + row * (GameAttributes::BOX_HEIGHT + GameAttributes::LINE_WIDTH);
-		drawLine(m_window, startX, y, endX, y);
+		float y = m_anchorY + row * (GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH);
+		drawLine(startX, y, endX, y);
 	}
 
 	float startY = m_anchorY;
-	float endY = m_anchorY + GameAttributes::GAME_GRID_TOTAL_HEIGHT;
+	float endY = m_anchorY + m_rowCount * (GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH);
 
 	// Draw lines for the columns
 	for (float column = 0; column <= m_columnCount; ++column) {
-		float x = m_anchorX + column * (GameAttributes::BOX_WIDTH + GameAttributes::LINE_WIDTH);
-		drawLine(m_window, x, startY, x, endY);
+		float x = m_anchorX + column * (GameAttributes::SQUARE_WIDTH + GameAttributes::LINE_WIDTH);
+		drawLine(x, startY, x, endY);
 	}
 
 }
 
-void GameGrid::drawBox(int row, int column, sf::Color color) {
-	float x = m_anchorX + (GameAttributes::BOX_WIDTH + GameAttributes::LINE_WIDTH) * column;
-	float y = GameAttributes::LINE_WIDTH + m_anchorY + (GameAttributes::BOX_HEIGHT + GameAttributes::LINE_WIDTH) * row;
+void GameGrid::drawSquare(int row, int column, sf::Color color) {
+	float x = m_anchorX + (GameAttributes::SQUARE_WIDTH + GameAttributes::LINE_WIDTH) * column;
+	float y = GameAttributes::LINE_WIDTH + m_anchorY + (GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH) * row;
 
-	sf::RectangleShape rectangle(sf::Vector2f(GameAttributes::BOX_WIDTH, GameAttributes::BOX_HEIGHT));
+	sf::RectangleShape rectangle(sf::Vector2f(GameAttributes::SQUARE_WIDTH, GameAttributes::SQUARE_HEIGHT));
 	rectangle.setFillColor(color);
 	rectangle.setPosition(sf::Vector2f(x, y));
 	m_window.draw(rectangle);
 }
 
-void GameGrid::drawGhostBox(int row, int column, sf::Color color) {
+void GameGrid::drawGhostSquare(int row, int column, sf::Color color) {
 	const float GHOST_LINE_THICKNESS = 1;
-	float x = m_anchorX + (GameAttributes::BOX_WIDTH + GameAttributes::LINE_WIDTH) * column + GHOST_LINE_THICKNESS;
-	float y = GameAttributes::LINE_WIDTH + m_anchorY + (GameAttributes::BOX_HEIGHT + GameAttributes::LINE_WIDTH) * row + GHOST_LINE_THICKNESS;
+	float x = m_anchorX + (GameAttributes::SQUARE_WIDTH + GameAttributes::LINE_WIDTH) * column + GHOST_LINE_THICKNESS;
+	float y = GameAttributes::LINE_WIDTH + m_anchorY + (GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH) * row + GHOST_LINE_THICKNESS;
 
-	sf::RectangleShape rectangle(sf::Vector2f(GameAttributes::BOX_WIDTH - (2 * GHOST_LINE_THICKNESS), GameAttributes::BOX_HEIGHT - (2 * GHOST_LINE_THICKNESS)));
+	sf::RectangleShape rectangle(sf::Vector2f(GameAttributes::SQUARE_WIDTH - (2 * GHOST_LINE_THICKNESS), GameAttributes::SQUARE_HEIGHT - (2 * GHOST_LINE_THICKNESS)));
 	rectangle.setFillColor(sf::Color::Black);
 	rectangle.setPosition(sf::Vector2f(x, y));
 	m_window.draw(rectangle);
@@ -166,7 +165,7 @@ void GameGrid::draw() {
 	for (int row = 0; row < m_rowCount; row++) {
 		for (int column = 0; column < m_columnCount; column++) {
 			if (m_grid[row][column] != sf::Color::Black) {
-				drawBox(row, column, m_grid[row][column]);
+				drawSquare(row, column, m_grid[row][column]);
 			}
 		}
 	}
@@ -175,9 +174,9 @@ void GameGrid::draw() {
 void GameGrid::drawPieceLocations(std::list<Location> locationsList, sf::Color color, bool ghost) {
 	std::lock_guard<std::mutex> scopedLock(m_mutex);
 	for (Location& location : locationsList) {
-		drawBox(location.row, location.column, color);
+		drawSquare(location.row, location.column, color);
 		if (ghost) {
-			drawGhostBox(location.row, location.column, color);
+			drawGhostSquare(location.row, location.column, color);
 		}
 	}
 }

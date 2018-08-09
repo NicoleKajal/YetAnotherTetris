@@ -97,6 +97,15 @@ std::list<Location> GamePiece::getGridLocations() {
 	return pieceLocations;
 }
 
+std::list<Location> GamePiece::getPreviewLocations() {
+	std::list <Location> pieceLocations;
+	for (int index = 0; index < GAME_PIECE_LOCATION_COUNT; index++) {
+		Location location = m_locations[m_orientation][index];
+		pieceLocations.push_back(location);
+	}
+	return pieceLocations;
+}
+
 void GamePiece::draw() {
 	const sf::Color blue(0, 0, 220);
 	std::lock_guard<std::mutex> scopedLock(m_mutex);

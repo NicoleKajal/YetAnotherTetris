@@ -7,6 +7,7 @@
 #include "DelayedEvent.hpp"
 #include "GameAttributes.hpp"
 #include "GamePieceFactory.hpp"
+#include "PreviewBox.hpp"
 
 GameManager::GameManager(sf::RenderWindow& window)
 : m_window(window),
@@ -30,6 +31,14 @@ void GameManager::commitPieceToGrid() {
 }
 
 void GameManager::processEvents() {
+	const int PREVIEW_COUNT = 3;
+	PreviewBox previewBox(m_window, 650, 100, PREVIEW_COUNT);
+	GamePieceList upcomingGamePieces;
+
+	for (int previewCount = 0; previewCount < PREVIEW_COUNT; previewCount++) {
+		upcomingGamePieces.push_back(GamePiecePointer(GamePieceFactory::makeRandomGamePiece(m_gameGrid)));
+	}
+
 	bool gameDone = false;
 	addEvent(EventType::CREATE_NEW_GAME_PIECE);
 	for (;;) {
@@ -37,7 +46,9 @@ void GameManager::processEvents() {
 
 		switch (event) {
 		    case EventType::CREATE_NEW_GAME_PIECE:
-				m_gamePiece.reset(GamePieceFactory::makeRandomGamePiece(m_gameGrid));
+				m_gamePiece = upcomingGamePieces.front();
+				upcomingGamePieces.pop_front();
+				upcomingGamePieces.push_back(GamePiecePointer(GamePieceFactory::makeRandomGamePiece(m_gameGrid)));
 				m_eventHistory.push_back(EventDataPointer(new EventData(event, m_gamePiece->shape(), m_gamePiece->color())));
 				if (!m_gamePiece->canEnterGrid()) {
 					gameDone = true;
@@ -91,6 +102,7 @@ void GameManager::processEvents() {
 		if (!gameDone) {
 			m_window.clear();
 			m_gameGrid.draw();
+			previewBox.draw(upcomingGamePieces);
 			m_gamePiece->draw();
 			m_window.display();
 		}
