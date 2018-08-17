@@ -57,3 +57,4 @@ private:
 
 typedef std::shared_ptr<GamePiece> GamePiecePointer;
 typedef std::list<GamePiecePointer> GamePieceList;
+typedef std::list<GamePiecePointer>::iterator GamePieceListIterator;

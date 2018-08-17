@@ -86,10 +86,13 @@ void GameGrid::highlightRowsToBeDeleted() {
 	}
 }
 
-void GameGrid::deleteRowsToBeDeleted() {
+int GameGrid::deleteRowsToBeDeleted() {
+	int rowCount = 0;
 	for (int row : m_rowsToBeDeleted) {
 		setRowColor(row, sf::Color::Black);
+		rowCount++;
 	}
+	return rowCount;
 }
 
 void GameGrid::compactGrid() {
@@ -102,26 +105,28 @@ void GameGrid::compactGrid() {
 	m_rowsToBeDeleted.clear();
 }
 
-void GameGrid::drawLine(float x1, float y1, float x2, float y2) {
+void GameGrid::drawLine(float x1, float y1, float x2, float y2, sf::Color color) {
 	sf::Vertex points[] =
 	{
 		sf::Vertex(sf::Vector2f(x1, y1)),
 		sf::Vertex(sf::Vector2f(x2, y2))
 	};
-	static const sf::Color grey(50, 50, 50);
-	points[0].color = grey;
-	points[1].color = grey;
+	points[0].color = color;
+	points[1].color = color;
 	m_window.draw(points, 2, sf::Lines);
 }
 
 void GameGrid::drawGridLines() {
+	static const sf::Color grey(100, 100, 100);
+	static const sf::Color lightGrey(150, 150, 150);
+
 	float startX = m_anchorX;
 	float endX = m_anchorX + m_columnCount * (GameAttributes::SQUARE_WIDTH + GameAttributes::LINE_WIDTH);
 
 	// Draw lines for the rows
 	for (float row = 0; row <= m_rowCount; ++row) {
 		float y = m_anchorY + row * (GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH);
-		drawLine(startX, y, endX, y);
+		drawLine(startX, y, endX, y, grey);
 	}
 
 	float startY = m_anchorY;
@@ -130,8 +135,14 @@ void GameGrid::drawGridLines() {
 	// Draw lines for the columns
 	for (float column = 0; column <= m_columnCount; ++column) {
 		float x = m_anchorX + column * (GameAttributes::SQUARE_WIDTH + GameAttributes::LINE_WIDTH);
-		drawLine(x, startY, x, endY);
+		drawLine(x, startY, x, endY, grey);
 	}
+
+	drawLine(startX, startY, endX, startY, lightGrey);
+	drawLine(startX, endY, endX, endY, lightGrey);
+	drawLine(startX, startY, startX, endY, lightGrey);
+	drawLine(endX, startY, endX, endY, lightGrey);
+
 
 }
 
@@ -146,7 +157,7 @@ void GameGrid::drawSquare(int row, int column, sf::Color color) {
 }
 
 void GameGrid::drawGhostSquare(int row, int column, sf::Color color) {
-	const float GHOST_LINE_THICKNESS = 1;
+	const float GHOST_LINE_THICKNESS = 2;
 	float x = m_anchorX + (GameAttributes::SQUARE_WIDTH + GameAttributes::LINE_WIDTH) * column + GHOST_LINE_THICKNESS;
 	float y = GameAttributes::LINE_WIDTH + m_anchorY + (GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH) * row + GHOST_LINE_THICKNESS;
 

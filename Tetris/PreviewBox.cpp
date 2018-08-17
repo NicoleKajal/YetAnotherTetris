@@ -2,9 +2,6 @@
 #include "PreviewBox.hpp"
 #include "GameAttributes.hpp"
 
-static const float BOX_BORDER_WIDTH = 30;
-static const int MINI_BOX_ROW_COUNT = 2;
-static const int MINI_BOX_COLUMN_COUNT = 4;
 
 struct Offsets {
 	float x;
@@ -50,25 +47,27 @@ void PreviewBox::drawSquare(float x, float y, sf::Color color) {
 void PreviewBox::draw(GamePieceList& gamePieceList) {
 	// Draw the lines around the preview box
 	float startX = m_anchorX;
-	float endX = m_anchorX + MINI_BOX_COLUMN_COUNT * (GameAttributes::SQUARE_WIDTH + GameAttributes::LINE_WIDTH) + (2 * BOX_BORDER_WIDTH);
+	float endX = m_anchorX + GameAttributes::PREVIEW_BOX_WIDTH;
 	float startY = m_anchorY;
-	float endY = m_anchorY + (m_gamePieceCount * MINI_BOX_ROW_COUNT) * (GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH) + ((m_gamePieceCount + 1) * BOX_BORDER_WIDTH);
+	float endY = m_anchorY + (m_gamePieceCount * GameAttributes::MINI_BOX_ROW_COUNT) * (GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH) + ((m_gamePieceCount + 1) * GameAttributes::PREVIEW_BOX_BORDER_WIDTH);
 
-	static const sf::Color grey(50, 50, 50);
-	drawLine(startX, startY, endX, startY, grey);
-	drawLine(startX, endY, endX, endY, grey);
-	drawLine(startX, startY, startX, endY, grey);
-	drawLine(endX, startY, endX, endY, grey);
+	static const sf::Color lightGrey(150, 150, 150);
+	drawLine(startX, startY, endX, startY, lightGrey);
+	drawLine(startX, endY, endX, endY, lightGrey);
+	drawLine(startX, startY, startX, endY, lightGrey);
+	drawLine(endX, startY, endX, endY, lightGrey);
 
 	// Draw the next pieces (each piece is drawn as four squares)
 	int pieceCount = 0;
-	for (GamePiecePointer gamePiece : gamePieceList) {
-		float yMiniBoxOffset = pieceCount++ * (MINI_BOX_ROW_COUNT * GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH + BOX_BORDER_WIDTH);
+	for (GamePiecePointer gamePiece: gamePieceList) {
+		float yMiniBoxOffset = pieceCount * (GameAttributes::MINI_BOX_ROW_COUNT * GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH + GameAttributes::PREVIEW_BOX_BORDER_WIDTH);
 		for (Location& location : gamePiece->getPreviewLocations()) {
 			Offsets offsets = offsetsArray[static_cast<int>(gamePiece->shape())];
-			float x = m_anchorX + BOX_BORDER_WIDTH + (GameAttributes::SQUARE_WIDTH + GameAttributes::LINE_WIDTH) * location.column + offsets.x;
-			float y = m_anchorY + BOX_BORDER_WIDTH + (GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH) * location.row + yMiniBoxOffset + offsets.y;
+			float x = m_anchorX + GameAttributes::PREVIEW_BOX_BORDER_WIDTH + (GameAttributes::SQUARE_WIDTH + GameAttributes::LINE_WIDTH) * location.column + offsets.x;
+			float y = m_anchorY + GameAttributes::PREVIEW_BOX_BORDER_WIDTH + (GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH) * location.row + yMiniBoxOffset + offsets.y;
 			drawSquare(x, y, gamePiece->color());
 		}
+		if (++pieceCount >= m_gamePieceCount)
+			break;
 	}
 }

@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include "stdafx.h"
 #include "Location.hpp"
 #include "GameAttributes.hpp"
@@ -77,11 +78,15 @@ GamePiece* GamePieceFactory::makeRandomGamePiece(GameGrid& gameGrid) {
 	sf::Color newColor;
 	const int MAX_RETRIES(3);
 	for (int retry = 0; retry < MAX_RETRIES; retry++) {
-		newColor = gamePieceColors[rand() % GAME_PIECE_COLOR_COUNT];
+		newColor = gamePieceColors[std::rand() % GAME_PIECE_COLOR_COUNT];
 		if (newColor != lastColor)
 			break;
 	}
 	lastColor = newColor;
-	GamePieceShape shape = static_cast<GamePieceShape>(rand() % GameAttributes::GAME_PIECE_SHAPE_COUNT);
+	int index = std::rand() % 10;
+	if (index >= GameAttributes::GAME_PIECE_SHAPE_COUNT) {
+		index = 0;
+	}
+	GamePieceShape shape = static_cast<GamePieceShape>(index);
 	return new GamePiece(gameGrid, gamepieceLocations[static_cast<int>(shape)], shape, newColor);
 }

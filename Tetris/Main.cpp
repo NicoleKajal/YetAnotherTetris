@@ -16,7 +16,7 @@ const char* GAME_ATTRIBUTES_WINDOW_TITLE = "Yet Another Tetris";
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(GameAttributes::WINDOW_WIDTH, GameAttributes::WINDOW_HEIGHT),
+	sf::RenderWindow window(sf::VideoMode(static_cast<int>(GameAttributes::WINDOW_WIDTH), static_cast<int>(GameAttributes::WINDOW_HEIGHT)),
 		                    GAME_ATTRIBUTES_WINDOW_TITLE, sf::Style::Titlebar | sf::Style::Close);
 	GameManager gameManager(window);
 	EventMonitor eventMonitor(window, gameManager);

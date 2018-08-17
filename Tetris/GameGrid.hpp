@@ -15,7 +15,7 @@ public:
 	void drawPieceLocations(std::list<Location> locationsList, sf::Color color, bool ghost);
 	void draw();
 	void highlightRowsToBeDeleted();
-	void deleteRowsToBeDeleted();
+	int deleteRowsToBeDeleted();
 	void compactGrid();
 	bool hasRowsToBeDeleted();
 	void reset();
@@ -27,7 +27,7 @@ private:
 	void setRowColor(int row, sf::Color color);
 	void drawGhostSquare(int row, int column, sf::Color color);
 	void clearGrid();
-	void drawLine(float x1, float y1, float x2, float y2);
+	void drawLine(float x1, float y1, float x2, float y2, sf::Color color);
 
 	mutable std::mutex						m_mutex;		// Used to make object thread-safe
 	sf::RenderWindow&						m_window;		// Window in which grid is to be drawn
