@@ -121,20 +121,20 @@ void GameGrid::drawGridLines() {
 	static const sf::Color lightGrey(150, 150, 150);
 
 	float startX = m_anchorX;
-	float endX = m_anchorX + m_columnCount * (GameAttributes::SQUARE_WIDTH + GameAttributes::LINE_WIDTH);
+	float endX = m_anchorX + m_columnCount * (GameAttributes::GAME_GRID_SQUARE_SIZE + GameAttributes::GAME_GRID_LINE_SIZE);
 
 	// Draw lines for the rows
 	for (float row = 0; row <= m_rowCount; ++row) {
-		float y = m_anchorY + row * (GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH);
+		float y = m_anchorY + row * (GameAttributes::GAME_GRID_SQUARE_SIZE + GameAttributes::GAME_GRID_LINE_SIZE);
 		drawLine(startX, y, endX, y, grey);
 	}
 
 	float startY = m_anchorY;
-	float endY = m_anchorY + m_rowCount * (GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH);
+	float endY = m_anchorY + m_rowCount * (GameAttributes::GAME_GRID_SQUARE_SIZE + GameAttributes::GAME_GRID_LINE_SIZE);
 
 	// Draw lines for the columns
 	for (float column = 0; column <= m_columnCount; ++column) {
-		float x = m_anchorX + column * (GameAttributes::SQUARE_WIDTH + GameAttributes::LINE_WIDTH);
+		float x = m_anchorX + column * (GameAttributes::GAME_GRID_SQUARE_SIZE + GameAttributes::GAME_GRID_LINE_SIZE);
 		drawLine(x, startY, x, endY, grey);
 	}
 
@@ -147,10 +147,10 @@ void GameGrid::drawGridLines() {
 }
 
 void GameGrid::drawSquare(int row, int column, sf::Color color) {
-	float x = m_anchorX + (GameAttributes::SQUARE_WIDTH + GameAttributes::LINE_WIDTH) * column;
-	float y = GameAttributes::LINE_WIDTH + m_anchorY + (GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH) * row;
+	float x = m_anchorX + (GameAttributes::GAME_GRID_SQUARE_SIZE + GameAttributes::GAME_GRID_LINE_SIZE) * column;
+	float y = GameAttributes::GAME_GRID_LINE_SIZE + m_anchorY + (GameAttributes::GAME_GRID_SQUARE_SIZE + GameAttributes::GAME_GRID_LINE_SIZE) * row;
 
-	sf::RectangleShape rectangle(sf::Vector2f(GameAttributes::SQUARE_WIDTH, GameAttributes::SQUARE_HEIGHT));
+	sf::RectangleShape rectangle(sf::Vector2f(GameAttributes::GAME_GRID_SQUARE_SIZE, GameAttributes::GAME_GRID_SQUARE_SIZE));
 	rectangle.setFillColor(color);
 	rectangle.setPosition(sf::Vector2f(x, y));
 	m_window.draw(rectangle);
@@ -158,10 +158,10 @@ void GameGrid::drawSquare(int row, int column, sf::Color color) {
 
 void GameGrid::drawGhostSquare(int row, int column, sf::Color color) {
 	const float GHOST_LINE_THICKNESS = 2;
-	float x = m_anchorX + (GameAttributes::SQUARE_WIDTH + GameAttributes::LINE_WIDTH) * column + GHOST_LINE_THICKNESS;
-	float y = GameAttributes::LINE_WIDTH + m_anchorY + (GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH) * row + GHOST_LINE_THICKNESS;
+	float x = m_anchorX + (GameAttributes::GAME_GRID_SQUARE_SIZE + GameAttributes::GAME_GRID_LINE_SIZE) * column + GHOST_LINE_THICKNESS;
+	float y = GameAttributes::GAME_GRID_LINE_SIZE + m_anchorY + (GameAttributes::GAME_GRID_SQUARE_SIZE + GameAttributes::GAME_GRID_LINE_SIZE) * row + GHOST_LINE_THICKNESS;
 
-	sf::RectangleShape rectangle(sf::Vector2f(GameAttributes::SQUARE_WIDTH - (2 * GHOST_LINE_THICKNESS), GameAttributes::SQUARE_HEIGHT - (2 * GHOST_LINE_THICKNESS)));
+	sf::RectangleShape rectangle(sf::Vector2f(GameAttributes::GAME_GRID_SQUARE_SIZE - (2 * GHOST_LINE_THICKNESS), GameAttributes::GAME_GRID_SQUARE_SIZE - (2 * GHOST_LINE_THICKNESS)));
 	rectangle.setFillColor(sf::Color::Black);
 	rectangle.setPosition(sf::Vector2f(x, y));
 	m_window.draw(rectangle);

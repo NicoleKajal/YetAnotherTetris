@@ -5,8 +5,6 @@
 #include "GamePiece.hpp"
 #include "GameGrid.hpp"
 
-
-
 class GamePieceFactory {
 public:
 	static GamePiece* makeGamePiece(GameGrid& gameGrid, GamePieceShape shape, sf::Color color);

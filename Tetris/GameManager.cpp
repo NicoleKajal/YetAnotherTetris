@@ -1,4 +1,6 @@
+#include <chrono>
 #include <memory>
+#include <iostream>
 #include "stdafx.h"
 #include "StatsBox.hpp"
 #include "EventData.hpp"
@@ -8,18 +10,20 @@
 #include "DelayedEvent.hpp"
 #include "GameAttributes.hpp"
 #include "GamePieceFactory.hpp"
-#include <iostream>
-#include <chrono>
-
-const int FONT_SIZE = 46;
 
 GameManager::GameManager(sf::RenderWindow& window)
 : m_window(window),
-  m_nextLabel("Next", FONT_SIZE, GameAttributes::GAME_PREVIEW_BOX_X + GameAttributes::PREVIEW_BOX_WIDTH / 2, GameAttributes::GAME_GRID_ANCHOR_Y + 28),
-  m_statsLabel("Stats", FONT_SIZE, GameAttributes::SCREEN_ITEM_PADDING + GameAttributes::PREVIEW_BOX_WIDTH / 2, GameAttributes::GAME_GRID_ANCHOR_Y + 28),
   m_eventHistory(),
+  m_nextLabel("Next", GameAttributes::MAIN_LABEL_FONT_SIZE,
+	          GameAttributes::NEXT_LABEL_ANCHOR_X, GameAttributes::NEXT_LABEL_ANCHOR_Y),
+  m_statsLabel("Stats", GameAttributes::MAIN_LABEL_FONT_SIZE, 
+	           GameAttributes::STATS_LABEL_ANCHOR_X, GameAttributes::STATS_LABEL_ANCHOR_Y),
   m_gameGrid(m_window, GameAttributes::GAME_GRID_ANCHOR_X, GameAttributes::GAME_GRID_ANCHOR_Y,
 	         GameAttributes::GAME_GRID_ROW_COUNT, GameAttributes::GAME_GRID_COLUMN_COUNT),
+  m_statsBox(m_window, GameAttributes::STATS_BOX_ANCHOR_X, GameAttributes::STATS_BOX_ANCHOR_Y, 
+	         GameAttributes::STATS_BOX_HEIGHT, GameAttributes::STATS_BOX_WIDTH),
+  m_previewBox(m_window, GameAttributes::PREVIEW_BOX_ANCHOR_X, GameAttributes::PREVIEW_BOX_ANCHOR_Y, 
+	           GameAttributes::PREVIEW_BOX_ITEM_COUNT),
   m_gamePiece(),
   m_messageQueue(), 
   m_thread(&GameManager::processEvents, this),
@@ -38,11 +42,9 @@ void GameManager::commitPieceToGrid() {
 
 void GameManager::processEvents() {
 	auto start = std::chrono::high_resolution_clock::now();
-	StatsBox statsBox(m_window, GameAttributes::STATS_BOX_X, GameAttributes::STATS_BOX_Y, GameAttributes::PREVIEW_BOX_HEIGHT, GameAttributes::STATS_BOX_WIDTH);
-	PreviewBox previewBox(m_window, GameAttributes::GAME_PREVIEW_BOX_X, GameAttributes::GAME_PREVIEW_BOX_Y, GameAttributes::PREVIEW_COUNT);
 	GamePieceList upcomingGamePieces;
 
-	for (int previewCount = 0; previewCount < GameAttributes::PREVIEW_COUNT; previewCount++) {
+	for (int previewCount = 0; previewCount < GameAttributes::PREVIEW_BOX_ITEM_COUNT; previewCount++) {
 		upcomingGamePieces.push_back(GamePiecePointer(GamePieceFactory::makeRandomGamePiece(m_gameGrid)));
 	}
 
@@ -62,7 +64,7 @@ void GameManager::processEvents() {
 					playBack();
 				}
 				else {
-					statsBox.incrementPieceCount();
+					m_statsBox.incrementPieceCount();
 				}
 				break;
 		    case EventType::MOVE_LEFT:
@@ -90,10 +92,7 @@ void GameManager::processEvents() {
 				m_window.close();
 				break;
 			case EventType::REMOVE_ROWS:
-			{
-				int rowCount = m_gameGrid.deleteRowsToBeDeleted();
-				statsBox.updateRowCount(rowCount);
-			}
+				m_statsBox.updateRowCount(m_gameGrid.deleteRowsToBeDeleted());
 				break;
 			case EventType::COMPACT_GRID:
 				m_gameGrid.compactGrid();
@@ -117,12 +116,12 @@ void GameManager::processEvents() {
 			std::chrono::duration<double> elapsed = finish - start;
 			double seconds = elapsed.count();
 
-			statsBox.updateElapsedTime(static_cast<int>(seconds));
+			m_statsBox.updateElapsedTime(static_cast<int>(seconds));
 			m_window.clear();
 			m_gameGrid.draw();
-			previewBox.draw(upcomingGamePieces);
+			m_previewBox.draw(upcomingGamePieces);
 			m_gamePiece->draw();
-			statsBox.draw();
+			m_statsBox.draw();
 			m_window.draw(m_statsLabel);
 			m_window.draw(m_nextLabel);
 			m_window.display();

@@ -4,11 +4,13 @@
 #include <memory>
 #include <vector>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include "StatsBox.hpp"
 #include "GameText.hpp"
 #include "GameGrid.hpp"
 #include "GamePiece.hpp"
 #include "EventData.hpp"
 #include "EventType.hpp"
+#include "PreviewBox.hpp"
 #include "MessageQueue.hpp"
 
 class GameManager {
@@ -24,10 +26,12 @@ private:
 	void playBack();
 
 	sf::RenderWindow&				m_window;
+	std::vector<EventDataPointer>	m_eventHistory;
 	GameText                        m_nextLabel;
 	GameText                        m_statsLabel;
-	std::vector<EventDataPointer>	m_eventHistory;
 	GameGrid 						m_gameGrid;
+	StatsBox						m_statsBox;
+	PreviewBox                      m_previewBox;
 	GamePiecePointer          		m_gamePiece;
 	MessageQueue<EventType>			m_messageQueue;
 	std::thread						m_thread;

@@ -3,18 +3,14 @@
 #include "GamePiece.hpp"
 #include "GameGrid.hpp"
 
-static const int GAME_PIECE_GRID_ENTRY_ROW = 0;
-static const int GAME_PIECE_GRID_ENTRY_COLUMN = (GameAttributes::GAME_GRID_COLUMN_COUNT - GAME_PIECE_MAX_WIDTH) / 2;
-static const int GAME_PIECE_GRID_ENTRY_ORIENTATION = 0;
-
 GamePiece::GamePiece(GameGrid &gameGrid, locationArrayPointer locations, GamePieceShape shape, sf::Color color)
 : m_mutex(),
   m_shape(shape),
   m_color(color),
   m_gameGrid(gameGrid),
-  m_anchorRow(GAME_PIECE_GRID_ENTRY_ROW),
-  m_anchorColumn(GAME_PIECE_GRID_ENTRY_COLUMN),
-  m_orientation(GAME_PIECE_GRID_ENTRY_ORIENTATION),
+  m_anchorRow(GameAttributes::GAME_PIECE_GRID_ENTRY_ROW),
+  m_anchorColumn(GameAttributes::GAME_PIECE_GRID_ENTRY_COLUMN),
+  m_orientation(GameAttributes::GAME_PIECE_GRID_ENTRY_ORIENTATION),
   m_locations(locations) {
 }
 
@@ -31,12 +27,12 @@ GamePiece::GamePiece(const GamePiece &gamePiece)
 
 bool GamePiece::rotateRight() {
 	std::lock_guard<std::mutex> scopedLock(m_mutex);
-	return tryMove(m_orientation, (m_orientation + 1) >= GAME_PIECE_ORIENTATION_COUNT ? 0 : m_orientation + 1);
+	return tryMove(m_orientation, (m_orientation + 1) >= GameAttributes::GAME_PIECE_ORIENTATION_COUNT ? 0 : m_orientation + 1);
 }
 
 bool GamePiece::rotateLeft() {
 	std::lock_guard<std::mutex> scopedLock(m_mutex);
-	return tryMove(m_orientation, (m_orientation == 0 ? GAME_PIECE_ORIENTATION_COUNT : m_orientation) - 1);
+	return tryMove(m_orientation, (m_orientation == 0 ? GameAttributes::GAME_PIECE_ORIENTATION_COUNT : m_orientation) - 1);
 }
 
 bool GamePiece::moveLeft() {
@@ -88,7 +84,7 @@ bool GamePiece::tryMove(int& parameter, int newValue) {
 
 std::list<Location> GamePiece::getGridLocations() {
 	std::list <Location> pieceLocations;
-	for (int index = 0; index < GAME_PIECE_LOCATION_COUNT; index++) {
+	for (int index = 0; index < GameAttributes::GAME_PIECE_LOCATION_COUNT; index++) {
 		Location location = m_locations[m_orientation][index];
 		location.row += m_anchorRow;
 		location.column += m_anchorColumn;
@@ -99,7 +95,7 @@ std::list<Location> GamePiece::getGridLocations() {
 
 std::list<Location> GamePiece::getPreviewLocations() {
 	std::list <Location> pieceLocations;
-	for (int index = 0; index < GAME_PIECE_LOCATION_COUNT; index++) {
+	for (int index = 0; index < GameAttributes::GAME_PIECE_LOCATION_COUNT; index++) {
 		Location location = m_locations[m_orientation][index];
 		pieceLocations.push_back(location);
 	}

@@ -9,13 +9,13 @@ struct Offsets {
 };
 
 static Offsets offsetsArray[GameAttributes::GAME_PIECE_SHAPE_COUNT] = {
-    {0, -1 * (GameAttributes::SQUARE_HEIGHT / 2)},
+    {0, -1 * (GameAttributes::GAME_GRID_SQUARE_SIZE / 2)},
 	{0, 0},
-	{GameAttributes::SQUARE_WIDTH / 2, 0},
-	{GameAttributes::SQUARE_WIDTH / 2, 0},
-	{GameAttributes::SQUARE_WIDTH / 2, 0},
-	{GameAttributes::SQUARE_WIDTH / 2, 0},
-	{GameAttributes::SQUARE_WIDTH / 2, 0},
+	{GameAttributes::GAME_GRID_SQUARE_SIZE / 2, 0},
+	{GameAttributes::GAME_GRID_SQUARE_SIZE / 2, 0},
+	{GameAttributes::GAME_GRID_SQUARE_SIZE / 2, 0},
+	{GameAttributes::GAME_GRID_SQUARE_SIZE / 2, 0},
+	{GameAttributes::GAME_GRID_SQUARE_SIZE / 2, 0},
 };
 
 PreviewBox::PreviewBox(sf::RenderWindow& window, float anchorX, float anchorY, int gamePieceCount)
@@ -38,7 +38,7 @@ void PreviewBox::drawLine(float x1, float y1, float x2, float y2, sf::Color colo
 }
 
 void PreviewBox::drawSquare(float x, float y, sf::Color color) {
-	sf::RectangleShape rectangle(sf::Vector2f(GameAttributes::SQUARE_WIDTH, GameAttributes::SQUARE_HEIGHT));
+	sf::RectangleShape rectangle(sf::Vector2f(GameAttributes::GAME_GRID_SQUARE_SIZE, GameAttributes::GAME_GRID_SQUARE_SIZE));
 	rectangle.setFillColor(color);
 	rectangle.setPosition(sf::Vector2f(x, y));
 	m_window.draw(rectangle);
@@ -49,7 +49,7 @@ void PreviewBox::draw(GamePieceList& gamePieceList) {
 	float startX = m_anchorX;
 	float endX = m_anchorX + GameAttributes::PREVIEW_BOX_WIDTH;
 	float startY = m_anchorY;
-	float endY = m_anchorY + (m_gamePieceCount * GameAttributes::MINI_BOX_ROW_COUNT) * (GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH) + ((m_gamePieceCount + 1) * GameAttributes::PREVIEW_BOX_BORDER_WIDTH);
+	float endY = m_anchorY + (m_gamePieceCount * GameAttributes::PREVIEW_BOX_ITEM_ROW_COUNT) * (GameAttributes::GAME_GRID_SQUARE_SIZE + GameAttributes::GAME_GRID_LINE_SIZE) + ((m_gamePieceCount + 1) * GameAttributes::PREVIEW_BOX_BORDER_WIDTH);
 
 	static const sf::Color lightGrey(150, 150, 150);
 	drawLine(startX, startY, endX, startY, lightGrey);
@@ -60,11 +60,11 @@ void PreviewBox::draw(GamePieceList& gamePieceList) {
 	// Draw the next pieces (each piece is drawn as four squares)
 	int pieceCount = 0;
 	for (GamePiecePointer gamePiece: gamePieceList) {
-		float yMiniBoxOffset = pieceCount * (GameAttributes::MINI_BOX_ROW_COUNT * GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH + GameAttributes::PREVIEW_BOX_BORDER_WIDTH);
+		float yMiniBoxOffset = pieceCount * (GameAttributes::PREVIEW_BOX_ITEM_ROW_COUNT * GameAttributes::GAME_GRID_SQUARE_SIZE + GameAttributes::GAME_GRID_LINE_SIZE + GameAttributes::PREVIEW_BOX_BORDER_WIDTH);
 		for (Location& location : gamePiece->getPreviewLocations()) {
 			Offsets offsets = offsetsArray[static_cast<int>(gamePiece->shape())];
-			float x = m_anchorX + GameAttributes::PREVIEW_BOX_BORDER_WIDTH + (GameAttributes::SQUARE_WIDTH + GameAttributes::LINE_WIDTH) * location.column + offsets.x;
-			float y = m_anchorY + GameAttributes::PREVIEW_BOX_BORDER_WIDTH + (GameAttributes::SQUARE_HEIGHT + GameAttributes::LINE_WIDTH) * location.row + yMiniBoxOffset + offsets.y;
+			float x = m_anchorX + GameAttributes::PREVIEW_BOX_BORDER_WIDTH + (GameAttributes::GAME_GRID_SQUARE_SIZE + GameAttributes::GAME_GRID_LINE_SIZE) * location.column + offsets.x;
+			float y = m_anchorY + GameAttributes::PREVIEW_BOX_BORDER_WIDTH + (GameAttributes::GAME_GRID_SQUARE_SIZE + GameAttributes::GAME_GRID_LINE_SIZE) * location.row + yMiniBoxOffset + offsets.y;
 			drawSquare(x, y, gamePiece->color());
 		}
 		if (++pieceCount >= m_gamePieceCount)

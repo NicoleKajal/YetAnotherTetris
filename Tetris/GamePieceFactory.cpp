@@ -5,7 +5,7 @@
 #include "GamePieceShape.hpp"
 #include "GamePieceFactory.hpp"
 
-Location gamepieceLocations[GameAttributes::GAME_PIECE_SHAPE_COUNT][GAME_PIECE_ORIENTATION_COUNT][GAME_PIECE_LOCATION_COUNT] =
+Location gamepieceLocations[GameAttributes::GAME_PIECE_SHAPE_COUNT][GameAttributes::GAME_PIECE_ORIENTATION_COUNT][GameAttributes::GAME_PIECE_LOCATION_COUNT] =
 {
 	{ // GAME_PIECE_SHAPE_LINE
 	{ { 1,0 },{ 1,1 },{ 1,2 },{ 1,3 } },

@@ -1,24 +1,23 @@
 #include "stdafx.h"
 #include "StatsBox.hpp"
-
-const int STATS_FONT_SIZE = 32;
+#include "GameAttributes.hpp"
 
 StatsBox::StatsBox(sf::RenderWindow& window, float x, float y, float height, float width)
-: m_mutex(),
-  m_window(window),
+: m_window(window),
+  m_mutex(),
+  m_elapsedTime(0),
+  m_lineCount(0),
+  m_pieceCount(0),
   m_anchorX(x),
   m_anchorY(y),
   m_height(height),
   m_width(width),
-  m_timeLabel("Time", STATS_FONT_SIZE, x + width / 2, y + 0.5f * height / 6),
-  m_timeText("0:00", STATS_FONT_SIZE, x + width / 2, y + 1.5f * height / 6),
-  m_linesLabel("Lines", STATS_FONT_SIZE, x + width / 2, y + 2.5f * height / 6),
-  m_linesText("0", STATS_FONT_SIZE, x + width / 2, y + 3.5f * height / 6),
-  m_piecesLabel("Pieces", STATS_FONT_SIZE, x + width / 2, y + 4.5f * height / 6),
-  m_piecesText("0", STATS_FONT_SIZE, x + width / 2, y + 5.5f * height / 6),
-  m_pieceCount(0),
-  m_lineCount(0),
-  m_elapsedTime(0) {
+  m_timeLabel("Time", GameAttributes::STATS_FONT_SIZE, x + width / 2, y + 0.5f * height / 6),
+  m_timeText("0:00", GameAttributes::STATS_FONT_SIZE, x + width / 2, y + 1.5f * height / 6),
+  m_linesLabel("Lines", GameAttributes::STATS_FONT_SIZE, x + width / 2, y + 2.5f * height / 6),
+  m_linesText("0", GameAttributes::STATS_FONT_SIZE, x + width / 2, y + 3.5f * height / 6),
+  m_piecesLabel("Pieces", GameAttributes::STATS_FONT_SIZE, x + width / 2, y + 4.5f * height / 6),
+  m_piecesText("0", GameAttributes::STATS_FONT_SIZE, x + width / 2, y + 5.5f * height / 6) {
 }
 
 void StatsBox::incrementPieceCount() {
@@ -43,17 +42,14 @@ void StatsBox::draw() {
 	float endX = m_anchorX + m_width;
 	float startY = m_anchorY;
 	float endY = m_anchorY + m_height;
-	static const sf::Color grey(75, 75, 75);
 	static const sf::Color lightGrey(150, 150, 150);
 	drawLine(startX, startY, endX, startY, lightGrey);
-	drawLine(startX, startY + rowHeight, endX, startY + rowHeight, grey);
-	drawLine(startX, startY + 2 * rowHeight, endX, startY + 2 * rowHeight, lightGrey);
-	drawLine(startX, startY + 3 * rowHeight, endX, startY + 3 * rowHeight, grey);
-	drawLine(startX, startY + 4 * rowHeight, endX, startY + 4 * rowHeight, lightGrey);
-	drawLine(startX, startY + 5 * rowHeight, endX, startY + 5 * rowHeight, grey);
 	drawLine(startX, endY, endX, endY, lightGrey);
 	drawLine(startX, startY, startX, endY, lightGrey);
 	drawLine(endX, startY, endX, endY, lightGrey);
+	for (int row = 0; row < 6; row++) {
+		drawLine(startX, startY + row * rowHeight, endX, startY + row * rowHeight, lightGrey);
+	}
 
 	{
 		std::lock_guard<std::mutex> scopedLock(m_mutex);

@@ -1,22 +1,15 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 #include <list>
 #include <mutex>
 #include <memory>
+#include <SFML/Graphics.hpp>
 #include "Location.hpp"
 #include "GamePieceShape.hpp"
+#include "GameAttributes.hpp"
 
 class GameGrid;
 
-// A game piece will always occupy four locations, which can have a maximum height of four
-// locations, a maximum width of four locations, and can be oriented in four different positions
-// (each new orientation can be viewed as a result of being rotated by 90 degrees).
-const int GAME_PIECE_LOCATION_COUNT = 4;
-const int GAME_PIECE_MAX_HIGHT = 4;
-const int GAME_PIECE_MAX_WIDTH = 4;
-const int GAME_PIECE_ORIENTATION_COUNT = 4;
-
-typedef Location(*locationArrayPointer)[GAME_PIECE_LOCATION_COUNT];
+typedef Location(*locationArrayPointer)[GameAttributes::GAME_PIECE_LOCATION_COUNT];
 
 class GamePiece {
 public:
